@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            execSelect();
+        });
+
+        async function execSelect() {
+            var sql = 'select * from Subject';
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = '';
+            html = html + '<table border="1">';
+
+            html = html + '<tr>';
+            html = html + '<th>' + "id" + '</th>';
+            html = html + '<th>' + "教科" + '</th>';
+            html = html + '<th>' + "1単位あたりの学習時間" + '</th>';
+            html = html + '</tr>';
+
+            for (var i = 0; i < objects.length; i++) {
+                html = html + '<tr>';
+                var object = objects[i];
+                html = html + '<td>' + object.id + '</td>';
+                html = html + '<td>' + object.name + '</td>';
+                html = html + '<td>' + object.kcal + '</td>';
+                html = html + '</tr>';
+            }
+            html = html + '</table>';
+            document.getElementById('result').innerHTML = html;
+        }
+    </script>
+
+    <script>
+        function button1Pressed() {
+            execInsert();
+        }
+
+        async function execInsert() {
+            var id = document.getElementById('tf1').value;
+            var sql = `delete from subject where subject.id="${id}"`;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = '';
+            html = html + '<table border="1">';
+
+            for (var i = 0; i < objects.length; i++) {
+                html = html + '<tr>';
+                var object = objects[i];
+                html = html + '<td>' + object.date + '</td>';
+                html = html + '<td>' + object.name + '</td>';
+                html = html + '<td>' + object.count + '</td>';
+                html = html + '<td>' + object.kcal + '</td>';
+                html = html + '</tr>';
+            }
+            html = html + '</table>';
+            document.getElementById('reresult').innerHTML = html;
+        }
+    </script>
+
+
+
+
+</head>
+
+<body>
+    <h1>管理者ページ</h1>
+    <br>
+    教科ID:<input id="tf1" value="" type="textfield">
+    <button onclick="button1Pressed()">削除</button>
+    <br>
+    <br>
+    <br>
+    <p id="result"></p>
+    <p id="reresult"></p>
+</body>
+
+</html>

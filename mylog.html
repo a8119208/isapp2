@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+
+    <script>
+        osql.requireLogin();
+
+        function button1Pressed() {
+            execInsert();
+        }
+
+        async function execInsert() {
+            var userid = document.getElementById('tf1').value;
+            var sql = `select Data1.date,Subject.name,Data1.count,Subject.kcal ,Data1.count * Subject.kcal as sum from(Users inner join Data1 on Users.userid=Data1.userid)inner join Subject on Data1.id = Subject.id where Users.userid="${userid}"`;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = '';
+            html = html + '<table border="1">';
+
+            html = html + '<tr>';
+            html = html + '<th>' + "日付" + '</th>';
+            html = html + '<th>' + "教科" + '</th>';
+            html = html + '<th>' + "単元数" + '</th>';
+            html = html + '<th>' + "1単元あたりの学習時間" + '</th>';
+            html = html + '<th>' + "合計学習時間" + '</th>';
+            html = html + '</tr>';
+
+
+            for (var i = 0; i < objects.length; i++) {
+                html = html + '<tr>';
+                var object = objects[i];
+                html = html + '<td>' + object.date + '</td>';
+                html = html + '<td>' + object.name + '</td>';
+                html = html + '<td>' + object.count + '</td>';
+                html = html + '<td>' + object.kcal + '</td>';
+                html = html + '<td>' + object.sum + '</td>';
+                html = html + '</tr>';
+            }
+            html = html + '</table>';
+            document.getElementById('result').innerHTML = html;
+        }
+    </script>
+
+
+
+</head>
+
+<body>
+    <h1>自分の記録</h1>
+    学籍番号:<input id="tf1" value="" type="textfield">(半角数字でお願いします)
+    <br>
+    <button onclick="button1Pressed()">表示</button>
+    <br>
+    <br>
+    <p id="result"></p>
+</body>
+
+</html>

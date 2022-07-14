@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            execSelect();
+        });
+
+        async function execSelect() {
+            var sql = 'select * from Subject';
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = '';
+            html = html + '<table border="1">';
+
+            html = html + '<tr>';
+            html = html + '<th>' + "教科id" + '</th>';
+            html = html + '<th>' + "名称" + '</th>';
+            html = html + '</tr>';
+
+            for (var i = 0; i < objects.length; i++) {
+                html = html + '<tr>';
+                var object = objects[i];
+                html = html + '<td>' + object.id + '</td>';
+                html = html + '<td>' + object.name + '</td>';
+                html = html + '</tr>';
+            }
+            html = html + '</table>';
+            document.getElementById('result').innerHTML = html;
+        }
+
+
+    </script>
+
+    <script>
+        osql.requireLogin();
+
+        function button1Pressed() {
+            execInsert();
+        }
+
+        async function execInsert() {
+            var userid = document.getElementById('tf1').value;
+            var date = document.getElementById('tf2').value;
+            var subjectid = document.getElementById('tf3').value;
+            var count = document.getElementById('tf4').value;
+
+            var sql = `insert into Data1 (userid,date,id,count) values("${userid}", "${date}", "${subjectid}", "${count}");`;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+
+            document.getElementById('result').innerHTML = 'OK';
+        }
+    </script>
+
+</head>
+
+<body>
+    <h1>本日の学習時間を入力</h1>
+    <br>
+    教科一覧（教科id/名称)
+    <br>
+    <p id="result"></p>
+    <br>
+    学習した教科(半角数字でお願いします)
+    <br>
+    学籍番号: <input id="tf1" value="" type="textfield">
+    <br>
+    日付: <input id="tf2" value="" type="textfield">(4桁でお願いします)
+    <br>
+    教科id:<input id="tf3" value="" type="textfield">
+    <br>
+    単元数: <input id="tf4" value="" type="textfield">
+    <br>
+    <button onclick="button1Pressed()">登録</button>
+    <br>
+</body>
+
+</html>

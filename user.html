@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+
+    <script>
+        osql.requireLogin();
+
+        function button1Pressed() {
+            execInsert();
+        }
+
+        async function execInsert() {
+            var userid = document.getElementById('tf1').value;
+            var names = document.getElementById('tf2').value;
+
+            var sql = `insert into Users (userid,names) values("${userid}", "${names}");`;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+
+            document.getElementById('result').innerHTML = 'OK';
+        }
+    </script>
+
+
+
+</head>
+
+<body>
+    <h1>ユーザー登録</h1>
+    学籍番号:<input id="tf1" value="" type="textfield">(半角数字でお願いします)
+    <br>
+    名前:<input id="tf2" value="" type="textfield">
+    <br>
+    <button onclick="button1Pressed()">登録</button>
+    <br>
+    <p id="result"></p>
+</body>
+
+</html>
